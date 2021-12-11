@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState } from "../atoms/modalAtom";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { CameraIcon } from "@heroicons/react/outline";
 
 function Modal() {
   const [open, setOpen] = useRecoilState(modalState);
+  const filePickerRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const captionRef = useRef(null);
+
+  const addImageToPost = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      // Ngambil file dari form
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+    reader.onload = (renderEvent) => {
+      setSelectedFile(renderEvent.target.result);
+    };
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -43,6 +61,23 @@ function Modal() {
           >
             <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
               <div>
+                {selectedFile ? (
+                  <img
+                    src={selectedFile}
+                    className="w-full object-contain cursor-pointer"
+                    onClick={() => setSelectedFile(null)}
+                  />
+                ) : (
+                  <div
+                    onClick={() => filePickerRef.current.click()}
+                    className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 cursor-pointer"
+                  >
+                    <CameraIcon
+                      className="h-6 w-6 text-red-600"
+                      aria-hidden="true"
+                    />
+                  </div>
+                )}
                 <div>
                   <div className="mt-3 text-center sm:mt-5">
                     <Dialog.Title
@@ -54,10 +89,10 @@ function Modal() {
 
                     <div>
                       <input
-                        // ref={filePickerRef}
+                        ref={filePickerRef}
                         type="file"
                         hidden
-                        // onChange={addToPost}
+                        onChange={addImageToPost}
                       />
                     </div>
 
@@ -65,7 +100,7 @@ function Modal() {
                       <input
                         className="border-none focus:ring-0 w-full text-center"
                         type="text"
-                        // ref={captionRef}
+                        ref={captionRef}
                         placeholder="Please enter a caption..."
                       />
                     </div>
