@@ -6,7 +6,14 @@ import { Fragment } from "react";
 import { CameraIcon } from "@heroicons/react/outline";
 import { ref, getDownloadURL, uploadString } from "@firebase/storage";
 import { db, storage } from "../firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { useSession } from "next-auth/react";
 
 function Modal() {
   const { data: session } = useSession();
@@ -38,7 +45,7 @@ function Modal() {
     // Create a post and add to firestore 'posts' collection
     // Get post ID for newly created post
     // Upload image to fb storage with post id
-    // get a download url from fs and update the original post with img
+    // get a download url from fb storage and update the original post with img
 
     const docRef = await addDoc(collection(db, "posts"), {
       username: session.user.username,
