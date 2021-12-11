@@ -15,9 +15,7 @@ function Feed() {
       }`}
     >
       <section className="col-span-2">
-        {/* Stories */}
         <Stories />
-        {/* Posts */}
         <Posts />
       </section>
 
